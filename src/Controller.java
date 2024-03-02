@@ -1,20 +1,20 @@
 import java.io.FileWriter;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
 public class Controller {
     private View view;
-    private List<Toy> toys = new ArrayList<>();
 
-    private List<Toy> prizeToys = new ArrayList<>();
-
+    private ToyRaffle toyRaffle;
 
 
 
-    public Controller(View view, List<Toy> toys, List<Toy> prizeToys) {
+
+    public Controller(View view, ToyRaffle toyRaffle) {
         this.view = view;
-        this.toys = toys;
-        this.prizeToys = prizeToys;
+        this.toyRaffle = toyRaffle;
     }
 
 
@@ -28,11 +28,11 @@ public class Controller {
             switch(com)
             {
                 case 1:
-                    ToyRaffle.raffle();
+                    toyRaffle.raffle();
                     break;
 
                 case 2:
-                    view.showToysForRaffle(toys);
+                    view.showToysForRaffle(toyRaffle.getToys());
                     break;
 
                 case 3:
@@ -43,7 +43,7 @@ public class Controller {
                             "(от 1 до 100): "));
                     Toy newToy = new Toy(newToyId, newToyName, newToyQuantity, newToyFrequency);
 
-                    toys.add(newToy);
+                    toyRaffle.getToys().add(newToy);
 
                     System.out.println("Новая игрушка добавлена!" +
                             newToy);
@@ -56,41 +56,35 @@ public class Controller {
                     double newFrequency = Double.parseDouble(view.prompt("Введите новые значения шанса выпадения " +
                             "игрушки"));
 
-                    for (Toy toy: toys){
+
+                    boolean isRightId = false;
+                    for (Toy toy: toyRaffle.getToys()){
                         if (toy.getId() == toyIdForChange){
+                            isRightId = true;
                             toy.setFrequency(newFrequency);
                             System.out.println("Новые значения установлены!");
+                            break;
                         }
-                        else{
-                            System.out.println("Игрушка с таким Id не нашлась");
+                        else {
+                            isRightId = false;
                         }
                     }
+                    if (isRightId = false){
+                        System.out.println("Игрушка с таким Id не нашлась");
+                    }
+
                     break;
 
                 case 5:
-                    System.out.println("------------Игрушки ожидающие выдачи-----------");
-                    System.out.println(prizeToys);
+                    view.showPrizeToys(toyRaffle.getPrizeToys());
                     break;
 
                 case 6:
                     int toyIdForWinner = Integer.parseInt(view.prompt("Введите id призовой игрушки: "));
-                    for (Toy toy: prizeToys){
-                        if (toy.getId() == toyIdForWinner){
-                            if (toy.getQuantity() == 1){
-                                prizeToys.remove(toy);
-                            }
-                            else{
-                                toy.setQuantity(toy.getQuantity() - 1);
-                            }
-                            ToyRaffle.issuedToyWriteToFile(toy);
-                            System.out.println("Выдана призовая игрушка!");
+                    toyRaffle.deleteToyFromPrizeList(toyRaffle.getPrizeToys(), toyIdForWinner);
+                    System.out.println("Вам выдана призовая игрушка!");
 
 
-                        }
-                        else{
-                            System.out.println("Игрушка не нашлась");
-                        }
-                    }
                     break;
 
                 case 7:

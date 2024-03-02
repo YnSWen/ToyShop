@@ -27,5 +27,13 @@ public class View {
         }
         System.out.println("---------------");
     }
+
+    public void showPrizeToys(List<Toy> prizeToys){
+        System.out.println("------------Игрушки ожидающие выдачи-----------");
+        for (Toy toy: prizeToys){
+            System.out.println(toy);
+        }
+        System.out.println("---------------");
+    }
 }
 

@@ -2,8 +2,6 @@ import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-// Press Shift twice to open the Search Everywhere dialog and type `show whitespaces`,
-// then press Enter. You can now see whitespace characters in your code.
 public class Main {
     public static void main(String[] args) {
 
@@ -22,7 +20,7 @@ public class Main {
          View view = new View();
          ToyRaffle toyRaffle = new ToyRaffle((ArrayList<Toy>) toys, (ArrayList<Toy>) prizeToys);
 
-         Controller controller = new Controller(view, toys, prizeToys);
+         Controller controller = new Controller(view, toyRaffle);
 
 
          controller.run();

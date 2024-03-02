@@ -1,5 +1,6 @@
 import java.io.FileWriter;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class ToyRaffle {
@@ -40,7 +41,7 @@ public class ToyRaffle {
             for (Toy toy : toys){
                 double random = Math.random() * 100;
                 if (random < toy.getFrequency()) {
-                    prizeToys.add(toy);
+                    addPrizeToyToList(toy);
                     System.out.println("Вы выиграли: " + toy.getToyName() + "\n" +
                             "Ваш индетификатор для получения игрушки: " + toy.getId());
                     if (toy.getQuantity() == 1 ){
@@ -63,9 +64,29 @@ public class ToyRaffle {
         }
     }
 
-    public void addPrizeToyToList(Toy toy){
-        prizeToys.add(toy);
+
+    public static void addPrizeToyToList(Toy toy){
+        boolean prizeToyInList = false;
+        for (Toy prizeToy: prizeToys){
+            if (prizeToy.getId() == toy.getId()){
+                    prizeToyInList = true;
+                    prizeToy.setQuantity(prizeToy.getQuantity() + 1);
+                    break;
+                }
+            else {
+                    prizeToyInList = false;
+                }
+        }
+        if (prizeToyInList == false){
+            Toy newPrizeToy = new Toy(toy.getId(), toy.getToyName(), toy.getQuantity(), toy.getFrequency());
+            newPrizeToy.setQuantity(1);
+            prizeToys.add(newPrizeToy);
+        }
+
     }
+
+
+
 
     public static void issuedToyWriteToFile(Toy toy){
         try(FileWriter fw = new FileWriter("issuedToys.txt",true )) {
@@ -76,6 +97,21 @@ public class ToyRaffle {
             System.out.println(e.getMessage());
         }
 
+    }
+
+    public static void deleteToyFromPrizeList (ArrayList<Toy> prizeToys, int toyId){
+        Iterator<Toy> iterator = prizeToys.iterator();
+        while (iterator.hasNext()) {
+            Toy toy = iterator.next();
+            if ((toy.getId() == toyId) & (toy.getQuantity() == 1)){
+                iterator.remove();
+                return;
+            }
+            else if ((toy.getId() == toyId) & (toy.getQuantity() > 1)){
+                toy.setQuantity(toy.getQuantity() - 1);
+            }
+        }
+        System.out.println("Игрушка не нашлась");
     }
 
 }
